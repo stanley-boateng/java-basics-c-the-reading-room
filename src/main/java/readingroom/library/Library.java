@@ -1,88 +1,11 @@
-// The Reading Room - community library lending tracker
-// Original program, built by a volunteer. New volunteers are told not to touch it.
-// Run it first to see the sort of thing they are worried about, and look closely
-// at the items and active loans in the end-of-day report.
+package readingroom.library;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
+import member.Member;
+import readingroom.item.LendingItem;
 
-public class LendingTracker {
-
-    public static void main(String[] args) {
-        Library lib = new Library("The Reading Room");
-
-        LendingItem novel = new LendingItem("Things Fall Apart", "BOOK");
-        LendingItem audioCourse = new LendingItem("French Audio Course", "AUDIO_KIT");
-        lib.addItem(novel);
-        lib.addItem(audioCourse);
-
-        Member kofi = new Member("Kofi Mensah", "STANDARD");
-        Member ama = new Member("Ama Owusu", "STUDENT");
-        lib.addMember(kofi);
-        lib.addMember(ama);
-
-        // a normal afternoon
-        lib.borrow(kofi, novel);
-        lib.borrow(ama, audioCourse);
-        lib.returnItem(audioCourse);
-
-        // ... and the sort of thing that worries them:
-        lib.borrow(ama, novel); // the novel is already out with Kofi, but nothing stops this
-
-        lib.printReport();
-    }
-}
-
-class LendingItem {
-    public String title;
-    public String type;   // "BOOK" or "AUDIO_KIT"
-    public String status; // "AVAILABLE" or "ON_LOAN"
-    public String currentBorrower;
-    public int id;
-    static int counter = 1;
-
-    public LendingItem(String title, String type) {
-        this.id = counter;
-        counter++;
-        this.title = title;
-        this.type = type;
-        this.status = "AVAILABLE";
-    }
-}
-
-class Member {
-    public String name;
-    public String kind; // "STANDARD" or "STUDENT"
-    public int id;
-    public List<String> history = new ArrayList<>();
-    static int counter = 1;
-
-    public Member(String name, String kind) {
-        this.id = counter;
-        counter++;
-        this.name = name;
-        this.kind = kind;
-    }
-}
-
-class Loan {
-    public int id;
-    public String memberName;
-    public String itemTitle;
-    public int loanDays;
-    public String status; // "ACTIVE" or "RETURNED"
-    static int counter = 1;
-
-    public Loan(String memberName, String itemTitle, int loanDays) {
-        this.id = counter;
-        counter++;
-        this.memberName = memberName;
-        this.itemTitle = itemTitle;
-        this.loanDays = loanDays;
-        this.status = "ACTIVE";
-    }
-}
-
-class Library {
+public class Library {
     public String name;
     public List<LendingItem> items = new ArrayList<>();
     public List<Member> members = new ArrayList<>();
@@ -154,4 +77,5 @@ class Library {
             }
         }
     }
+    
 }

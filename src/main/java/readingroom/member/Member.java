@@ -1,0 +1,28 @@
+package readingroom.member;
+import java.util.Objects;
+
+public final class Member {
+    private final String name;
+    private final MemberType type; // "STANDARD" or "STUDENT"
+    
+
+   public Member(String name, MemberType type){
+        if (name == null || name.isBlank()){
+            throw new IllegalArgumentException("Member name cannot be empty");
+        }
+        this.name= name;
+        this.type = Objects.requireNonNull(type, "Member type cannot be null");
+   }
+
+   public String name(){
+    return  name;
+   }
+
+   public MemberType type(){
+    return type;
+   }
+
+   public String toString(){
+    return "Member[" + name + "," + type + "]";
+   }
+}
