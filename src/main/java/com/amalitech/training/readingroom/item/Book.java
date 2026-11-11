@@ -17,5 +17,4 @@ public final class Book extends LendingItem {
     public LoanPeriod loanPeriod() {
         return LOAN_PERIOD;
     }
-    
 }
