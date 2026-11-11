@@ -6,12 +6,17 @@ package readingroom;
 
 import java.util.*;
 import readingroom.member.Member;
+import readingroom.member.MemberType;
 import readingroom.item.LendingItem;
 import readingroom.library.Library;
 
-public class LendingTracker {
+public final class LendingTracker {
 
-    public static void main(String[] args) {
+    private LendingTracker() {
+        // This class is not meant to be instantiated.
+    }
+
+    static void main(String[] args) {
         Library lib = new Library("The Reading Room");
 
         LendingItem novel = new LendingItem("Things Fall Apart", "BOOK");
@@ -19,8 +24,8 @@ public class LendingTracker {
         lib.addItem(novel);
         lib.addItem(audioCourse);
 
-        Member kofi = new Member("Kofi Mensah", "STANDARD");
-        Member ama = new Member("Ama Owusu", "STUDENT");
+        Member kofi = new Member("Kofi Mensah", MemberType.STANDARD);
+        Member ama = new Member("Ama Owusu", MemberType.STUDENT);
         lib.addMember(kofi);
         lib.addMember(ama);
 

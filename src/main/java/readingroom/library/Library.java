@@ -51,58 +51,110 @@ public final class Library {
 
     public void addMember(Member member){
         Objects.requireNonNull(member, "member must not be null");
-        if (items.contains(member)){
+        if (members.contains(member)){
             throw new IllegalArgumentException(member + " is already registered");
         }
         members.add(member);
     }
 
+    private void requireRegisteredMember(Member member){
+        Objects.requireNonNull(member, "Member cannot be null");
+        if (!members.contains(member)){
+            throw new IllegalArgumentException(member + " is not registered with " + name);
+        }
+    }
+
+    private void requireRegisteredItem(LendingItem item){
+        Objects.requireNonNull(item, "Item cannot not be null");
+        if (!items.contains(item)){
+            throw new IllegalArgumentException(item + " is not registered with " + name);
+        }
+    }
+
     // Lend an item to a member. The loan period depends on the kind of item and member.
     public Loan borrow(Member member, LendingItem item) throws ItemAlreadyOnLoanException{
+        requireRegisteredMember(member);
+        requireRegisteredItem(item);
+
+        Integer activeLoanIndex = activeLoanIndexByItem.get(item);
+        if (activeLoanIndex != null) {
+            throw new ItemAlreadyOnLoanException(loans.get(activeLoanIndex));
+        }
+
+        var loan = Loan.open(loans.size() + 1, item, member, today());
+        loans.add(loan);
+        activeLoanIndexByItem.put(item, loans.size() - 1);
+        return loan;
+    }
+
+    public boolean returnItem(LendingItem item) {
+        requireRegisteredItem(item);
+
+        Integer index = activeLoanIndexByItem.get(item);
+        if (index == null) {
+            return false;
+        }
+        loans.set(index, loans.get(index).close(today()));
+        return true;
+    }
+
+    public boolean isOnLoan(LendingItem item) {
+        requireRegisteredItem(item);
+        return activeLoanIndexByItem.containsKey(item);
+    }
     
-        private void requireRegistered(Member member){
-            Objects.requireNonNull(member, "Member cannot be null");
-            if (!members.contains(member)){
-                throw new IllegalArgumentException(member + " is not registered with " + name);
-            }
+    public Loan getActiveLoan(LendingItem item) {
+        requireRegisteredItem(item);
+        Integer index = activeLoanIndexByItem.get(item);
+        if (index == null) {
+            throw new IllegalStateException(item + " is not currently on loan");
         }
-
-        private void requireRegistered(LendingItem item){
-            Objects.requireNonNull(item, "Item nust not be null");
-            if (!items.contains(item)){
-                throw new IllegalArgumentException(item + " is not registered with " + name);
-            }
-        }
-
-    public void returnItem(LendingItem item) {
-        item.status = "AVAILABLE";
-        item.currentBorrower = null;
-        for (Loan l : loans) {
-            if (l.itemTitle.equals(item.title) && l.status.equals("ACTIVE")) {
-                l.status = "RETURNED";
-            }
-        }
-        System.out.println("Returned \"" + item.title + "\"");
+        return loans.get(index);
     }
 
-    public List<Loan> getLoans() {
-        return loans;
+    // Return a copy of the list of all items in the library, so that the caller cannot modify the library's internal state.
+    public List<LendingItem> items() {
+        return List.copyOf(items);
     }
 
-    public void printReport() {
-        System.out.println();
-        System.out.println("=== " + name + " - end of day ===");
-        System.out.println("Items:");
-        for (LendingItem i : items) {
-            System.out.println("  \"" + i.title + "\" (" + i.type + "): " + i.status
-                    + (i.currentBorrower != null ? " - with " + i.currentBorrower : ""));
-        }
-        System.out.println("Active loans:");
-        for (Loan l : loans) {
-            if (l.status.equals("ACTIVE")) {
-                System.out.println("  Loan #" + l.id + ": \"" + l.itemTitle + "\" -> " + l.memberName);
+    // Return a copy of the list of all members in the library, so that the caller cannot modify the library's internal state.
+    public List<Member> members() {
+        return List.copyOf(members);
+    }
+
+    // Return a copy of the list of all loans that are currently active, so that the caller cannot modify the library's internal state.
+    public List<Loan> activeLoans() {
+        List<Loan> active = new ArrayList<>();
+        for (Loan loan : loans){
+            if (loan.isActive()){
+                active.add(loan);
             }
         }
+        return List.copyOf(active);
+    }
+
+    // Return a copy of the list of all loans that are overdue as of the given date, so that the caller cannot modify the library's internal state.
+    public List<Loan> overdueLoans(LocalDate asOfDate) {
+        Objects.requireNonNull(asOfDate, "asOfDate cannot be null");
+        List<Loan> overdue = new ArrayList<>();
+        for (Loan loan : loans){
+            if (loan.isOverdueOn(asOfDate)){
+                overdue.add(loan);
+            }
+        }
+        return List.copyOf(overdue);
+    }
+
+    // Return a copy of the list of all loans for the given member, so that the caller cannot modify the library's internal state.
+    public List<Loan> loansFor(Member member){
+        requireRegisteredMember(member);
+        List<Loan> history = new ArrayList<>();
+        for (Loan loan : loans){
+            if (loan.member().equals(member)){
+                history.add(loan);
+            }
+        }
+        return List.copyOf(history);
     }
     
 }
