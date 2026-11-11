@@ -9,7 +9,7 @@ alternatives, and how the structure makes the change the library says is coming
 
 ```
 com.amalitech.training.readingroom
-├── LendingTracker        entry point: sets up the library and replays the afternoon
+├── LendingTracker        entry point: wires the library and desk together, then replays the afternoon
 ├── item/                 WHAT can be lent
 │   ├── LendingItem       abstract: every item has a title and a loan rule
 │   ├── Book              14 days standard / 28 student
@@ -25,7 +25,7 @@ com.amalitech.training.readingroom
 ├── desk/                 WHAT THE VOLUNTEER SEES
 │   └── LendingDesk       prints the same messages as the original
 └── report/
-    └── EndOfDayReport    builds the end-of-day report lines
+    └── EndOfDayReport    builds and prints the end-of-day report
 ```
 
 Each package answers a question. That's the main thing that makes the code safe for
@@ -124,13 +124,25 @@ because they mean the calling code is wrong, not that something happened at the 
 **Alternative rejected:** returning `false` or `null` from `borrow()`. It's easy to
 ignore, and ignoring the problem is how the original lent the same book twice.
 
+Its constructor is package-private on purpose: only `Library` decides that an item is
+already on loan, so only code in the `library` package can create the exception. Other
+packages, such as the desk, can only catch it.
+
 ## Decision 6: rules are separate from printing
 
 `Library` holds the rules and prints nothing. `LendingDesk` prints the original
-messages word for word, and `EndOfDayReport` builds the report lines. Because of this:
+messages word for word, and `EndOfDayReport` builds the report lines and prints them
+(`printTo`), so everything about the report lives in one class. Because of this:
 - the rules can be checked without reading console text;
 - the report wording can change without any risk to the lending rules;
 - the output can be compared line by line with the original's (see "Behaviour" below).
+
+`LendingDesk.borrow` returns `true`/`false` as well as printing, so a caller can tell what
+happened without reading the console. The lending rule itself is tested where it lives:
+`Library.borrow` either returns the new `Loan` or throws. A dedicated result type (for
+example a `Lent`/`Refused` pair of records) would be the next step if more callers needed
+richer answers, but it adds code and goes beyond this module's topics, so it isn't worth it
+for one desk.
 
 ---
 
@@ -237,6 +249,20 @@ Active loans:
 **What's different, on purpose:** the second loan of the novel is refused. Because
 of that, the report correctly shows the novel with Kofi, and only one active loan.
 
+**Automated evidence.** `mvn test` runs JUnit tests that pin this behaviour down:
+
+| Test class | What it proves |
+|---|---|
+| `LendingDeskTest` | the console output of the original afternoon, line for line, with only the refused loan different; returning an item that isn't on loan prints exactly what the original printed |
+| `LibraryTest` | an item can't be on two loans (exception type, blocking loan number, first loan untouched); returns close only that copy's loan; read-only lists; registration and input checks |
+| `LoanPeriodTest` | the loan-period table (book 14/28, audio kit 7/14) as parameterized cases |
+| `EndOfDayReportTest` | the report format, and the overdue section added beyond the brief |
+
+As a check that the tests can fail, removing the double-loan check from `Library.borrow`
+makes 5 tests fail, and changing the student audio-kit period from 14 to 15 makes 4 fail.
+JUnit was added to `pom.xml` as a test-only dependency; the program itself still has no
+dependencies.
+
 The original program can be recovered from the first commit to compare:
 `git show 37a167b:src/main/java/LendingTracker.java`
 
@@ -251,6 +277,15 @@ own records or accepted a mistake:
 | The same item added twice | listed twice in the report | rejected with an error |
 
 ---
+
+**Kept the same on purpose: returning an item that isn't on loan.** The original printed
+`Returned "…"` and changed nothing. The rebuild does the same: `Library.returnItem` checks
+its single record of active loans, finds nothing, leaves every record untouched and returns
+`false`; the desk still prints `Returned "…"`. Printing a different message would change the
+tool's behaviour, which the brief rules out. It's a question for the library, though: a
+return of something the system thinks is on the shelf usually means a desk mistake, so a
+warning message here would be a sensible next change, and the `false` from `Library` is
+already there to drive it.
 
 ## Improvement beyond the brief: overdue loans
 
@@ -289,7 +324,7 @@ and why:
 
 - **`Loan` and `Library` share the `library` package**, so `Loan.open` and `close`
   can be package-private and only `Library` can create or close a loan.
-- **`isOnLoan()` sits next to `getActiveLoan()`**, so callers check first instead of
+- **`isOnLoan()` sits next to `activeLoanFor()`**, so callers check first instead of
   receiving `null`.
 - **`dueOn()`, `isOverdueOn()`, `overdueLoans()` and the report's overdue section**
   were added for the improvement above.
@@ -297,6 +332,12 @@ and why:
   follow Java's reversed-domain naming convention and match the project's `groupId`.
 
 ## Known limits
+
+- **No logging framework.** Every outcome is already shown to the volunteer by the desk, and
+  the program is meant to run with no external libraries (JUnit is test-only). If the
+  tracker moves to a server, SLF4J logging of refused loans and returns of items that
+  weren't out would be the next step, with member names kept out of the logs, as the
+  exception messages already do.
 
 - **Data lives in memory** and is lost when the program closes. Saving to a file or
   database is the natural next step.
