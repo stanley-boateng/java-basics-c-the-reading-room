@@ -1,8 +1,15 @@
 package readingroom.desk;
 
 import java.io.PrintStream;
-import readingroom.library.Library;
 import java.util.Objects;
+
+import readingroom.library.Library;
+import readingroom.library.Loan;
+import readingroom.library.ItemAlreadyOnLoanException;
+import readingroom.item.LendingItem;
+import readingroom.member.Member;
+import readingroom.report.EndOfDayReport;
+
 
 public final class LendingDesk {
     private final Library library;
@@ -32,7 +39,9 @@ public final class LendingDesk {
 
     public void PrintEndOfDayReport() {
         out.println();
-        for (String line : EndO)
+        for (String line : EndOfDayReport.lines(library)) {
+            out.println(line);
+        }
     }
 
 
