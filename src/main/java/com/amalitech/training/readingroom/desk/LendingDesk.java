@@ -37,7 +37,7 @@ public final class LendingDesk {
         out.println("Returned \"" + item.title() + "\"");
     }
 
-    public void PrintEndOfDayReport() {
+    public void printEndOfDayReport() {
         out.println();
         for (String line : EndOfDayReport.lines(library)) {
             out.println(line);

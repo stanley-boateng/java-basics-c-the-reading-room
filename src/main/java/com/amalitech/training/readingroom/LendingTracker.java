@@ -42,7 +42,7 @@ public final class LendingTracker {
         // ... and the sort of thing that worries them:
         desk.borrow(ama, novel); // the novel is already out with Kofi, but nothing stops this
 
-        desk.PrintEndOfDayReport();
+        desk.printEndOfDayReport();
     }
 }
 
