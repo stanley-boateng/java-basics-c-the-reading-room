@@ -33,11 +33,11 @@ public final class EndOfDayReport {
 
         List<String> reportLines = new ArrayList<>();
         reportLines.add("=== " + library.name() + " - end of day ===");
-        reportLines.add("Items in the library:");
+        reportLines.add("Items:");
         for (LendingItem item : library.items()) {
             String status = "AVAILABLE";
             if (library.isOnLoan(item)){
-                status = "ON LOAN - with " + library.getActiveLoan(item).member().name(); 
+                status = "ON_LOAN - with " + library.getActiveLoan(item).member().name(); 
             } 
             reportLines.add("  \"" + item.title() + "\" (" + item.typeCode() + "): " + status);
         }
