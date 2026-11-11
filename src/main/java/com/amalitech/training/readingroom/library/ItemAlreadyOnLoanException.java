@@ -1,4 +1,4 @@
-package readingroom.library;
+package com.amalitech.training.readingroom.library;
 
 public final class ItemAlreadyOnLoanException extends Exception {
  
