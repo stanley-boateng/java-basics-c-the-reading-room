@@ -23,10 +23,10 @@ public final class LendingDesk {
     public boolean borrow(Member member, LendingItem item) {
         try {
             Loan loan = library.borrow(member, item);
-            out.println("Loan #" + loan.number() + ": " + member.name() + " borrowed \"" + item.title() + "\"" + "for " + loan.loanDays() + " days, due on " + loan.dueOn());
+            out.println("Lent \"" + item.title() + "\" to " + member.name() + " for " + loan.loanDays() + " days");
             return true;    
         } catch (ItemAlreadyOnLoanException e) {
-            out.println("Sorry, \"" + item.title() + "\" is already on loan to " + e.borrowerName() + " (loan #" + e.blockingLoanNumber() + ")");
+            out.println("Cannot lend \"" + item.title() + "\" to " + member.name() + ": it is already on loan to " + e.borrowerName());
             return false;
         }
 
@@ -34,7 +34,7 @@ public final class LendingDesk {
 
     public void returnItem(LendingItem item){
         library.returnItem(item);
-        out.println("\"" + item.title() + "\" has been returned");
+        out.println("Returned \"" + item.title() + "\"");
     }
 
     public void PrintEndOfDayReport() {

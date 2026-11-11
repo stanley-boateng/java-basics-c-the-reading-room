@@ -90,7 +90,7 @@ public final class Library {
     public boolean returnItem(LendingItem item) {
         requireRegisteredItem(item);
 
-        Integer index = activeLoanIndexByItem.get(item);
+        Integer index = activeLoanIndexByItem.remove(item);
         if (index == null) {
             return false;
         }

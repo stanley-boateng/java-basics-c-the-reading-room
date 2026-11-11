@@ -23,7 +23,7 @@ public final class EndOfDayReport {
 
     //
     private static String describe(Loan loan) {
-        return "Loan #" + loan.number() + ": " + loan.member().name() + " borrowed \"" + loan.item().title() + "\" on " + loan.borrowedOn() + ", due on " + loan.dueOn();
+        return "  Loan #" + loan.number() + ": \"" + loan.item().title() + "\" -> " + loan.member().name();
     }
 
     
@@ -32,14 +32,14 @@ public final class EndOfDayReport {
         Objects.requireNonNull(asOfDate, "asOfDate cannot be null");
 
         List<String> reportLines = new ArrayList<>();
-        reportLines.add("End-of-day report for " + library.name() + " on " + library.today());
+        reportLines.add("=== " + library.name() + " - end of day ===");
         reportLines.add("Items in the library:");
         for (LendingItem item : library.items()) {
             String status = "AVAILABLE";
             if (library.isOnLoan(item)){
-                status = "ON LOAN - with" + library.getActiveLoan(item).member().name(); 
+                status = "ON LOAN - with " + library.getActiveLoan(item).member().name(); 
             } 
-            reportLines.add(" - " + item.title() + " (" + item.typeCode() + ")" + status);
+            reportLines.add("  \"" + item.title() + "\" (" + item.typeCode() + "): " + status);
         }
         reportLines.add("Active loans:");
         for (Loan loan : library.activeLoans()) {

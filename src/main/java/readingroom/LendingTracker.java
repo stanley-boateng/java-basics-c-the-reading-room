@@ -4,11 +4,15 @@ package readingroom;
 // Run it first to see the sort of thing they are worried about, and look closely
 // at the items and active loans in the end-of-day report.
 
-import java.util.*;
+
 import readingroom.member.Member;
 import readingroom.member.MemberType;
-import readingroom.item.LendingItem;
+import readingroom.item.Book;
 import readingroom.library.Library;
+import readingroom.desk.LendingDesk;
+import readingroom.item.AudioKit;
+
+
 
 public final class LendingTracker {
 
@@ -16,28 +20,29 @@ public final class LendingTracker {
         // This class is not meant to be instantiated.
     }
 
-    static void main(String[] args) {
-        Library lib = new Library("The Reading Room");
+    public static void main(String[] args) {
+        var library = new Library("The Reading Room");
+        var desk = new LendingDesk(library, System.out);
 
-        LendingItem novel = new LendingItem("Things Fall Apart", "BOOK");
-        LendingItem audioCourse = new LendingItem("French Audio Course", "AUDIO_KIT");
-        lib.addItem(novel);
-        lib.addItem(audioCourse);
+        var novel = new Book("Things Fall Apart");
+        var audioCourse = new AudioKit("French Audio Course");
+        library.addItem(novel);
+        library.addItem(audioCourse);
 
-        Member kofi = new Member("Kofi Mensah", MemberType.STANDARD);
-        Member ama = new Member("Ama Owusu", MemberType.STUDENT);
-        lib.addMember(kofi);
-        lib.addMember(ama);
+        var kofi = new Member("Kofi Mensah", MemberType.STANDARD);
+        var ama = new Member("Ama Owusu", MemberType.STUDENT);
+        library.addMember(kofi);
+        library.addMember(ama);
 
         // a normal afternoon
-        lib.borrow(kofi, novel);
-        lib.borrow(ama, audioCourse);
-        lib.returnItem(audioCourse);
+        desk.borrow(kofi, novel);
+        desk.borrow(ama, audioCourse);
+        desk .returnItem(audioCourse);
 
         // ... and the sort of thing that worries them:
-        lib.borrow(ama, novel); // the novel is already out with Kofi, but nothing stops this
+        desk.borrow(ama, novel); // the novel is already out with Kofi, but nothing stops this
 
-        lib.printReport();
+        desk.PrintEndOfDayReport();
     }
 }
 

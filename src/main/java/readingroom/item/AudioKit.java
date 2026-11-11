@@ -1,7 +1,7 @@
 package readingroom.item;
 
 public class AudioKit extends LendingItem{
-    private static final LoanPeriod LOAN_PERIOD = new LoanPeriod(7, 24);
+    private static final LoanPeriod LOAN_PERIOD = new LoanPeriod(7, 14);
 
     public AudioKit(String title) {
         super(title);

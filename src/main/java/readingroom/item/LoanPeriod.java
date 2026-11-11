@@ -12,7 +12,7 @@ public record LoanPeriod (int standardDays, int studentDays) {
     }
 
     public int daysFor(MemberType memberType){
-        Objects.requireNonNull(memberType, "MemberType canno be null");
+        Objects.requireNonNull(memberType, "MemberType cannot be null");
         if (memberType == MemberType.STUDENT){
             return studentDays;
         }
