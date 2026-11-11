@@ -3,7 +3,7 @@ import java.util.Objects;
 
 public final class Member {
     private final String name;
-    private final MemberType type; // "STANDARD" or "STUDENT"
+    private final MemberType type; 
     
 
    public Member(String name, MemberType type){
@@ -22,6 +22,7 @@ public final class Member {
     return type;
    }
 
+   @Override 
    public String toString(){
     return "Member[" + name + "," + type + "]";
    }

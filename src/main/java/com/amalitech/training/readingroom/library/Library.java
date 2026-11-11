@@ -37,9 +37,9 @@ public final class Library {
         return name;
     }
 
-    public LocalDate today() {{
+    public LocalDate today() {
         return LocalDate.now(clock);
-    }}
+    }
 
     public void addItem(LendingItem item){
         Objects.requireNonNull(item,"item cannot be null");

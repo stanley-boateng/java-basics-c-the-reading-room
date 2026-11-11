@@ -31,17 +31,21 @@ public record Loan (int number, LendingItem item, Member member, LocalDate borro
     public boolean isActive(){
         return returnedOn == null;
     }
+
+    // returns the date on which the loan is due to be returned
     public LocalDate dueOn(){
         return borrowedOn.plusDays(loanDays);
     }
 
+    // returns a new Loan record with the returnedOn date set to today, if the loan is still active
     Loan close(LocalDate today){
         if (!isActive()) {
-            throw new IllegalArgumentException("Loan #" + number + " is already closed");
+            throw new IllegalStateException("Loan #" + number + " is already closed");
         }
         return new Loan(number, item, member, borrowedOn, loanDays, today);
     }
     
+    // returns true if the loan is overdue on the given date
     public boolean isOverdueOn(LocalDate date) {
         Objects.requireNonNull(date, "date cannot be null");
         return isActive() && date.isAfter(dueOn());

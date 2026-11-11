@@ -1,6 +1,6 @@
 package com.amalitech.training.readingroom.item;
 
-public class AudioKit extends LendingItem{
+public final class AudioKit extends LendingItem{
     private static final LoanPeriod LOAN_PERIOD = new LoanPeriod(7, 14);
 
     public AudioKit(String title) {
