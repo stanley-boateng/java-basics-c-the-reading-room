@@ -1,4 +1,5 @@
-package readingroom.item;
+package com.amalitech.training.readingroom.item;
+
 public abstract class LendingItem {
 
     private final String title;

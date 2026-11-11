@@ -1,4 +1,4 @@
-package readingroom.library;
+package com.amalitech.training.readingroom.library;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import readingroom.member.Member;
-import readingroom.item.LendingItem;
+import com.amalitech.training.readingroom.member.Member;
+import com.amalitech.training.readingroom.item.LendingItem;
 
 public final class Library {
     private final String name;

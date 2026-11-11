@@ -1,4 +1,4 @@
-package readingroom.item;
+package com.amalitech.training.readingroom.item;
 
 public final class Book extends LendingItem {
 

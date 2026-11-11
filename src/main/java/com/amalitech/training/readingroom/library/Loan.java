@@ -1,10 +1,10 @@
-package readingroom.library;
+package com.amalitech.training.readingroom.library;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-import readingroom.item.LendingItem;
-import readingroom.member.Member;
+import com.amalitech.training.readingroom.item.LendingItem;
+import com.amalitech.training.readingroom.member.Member;
 
 public record Loan (int number, LendingItem item, Member member, LocalDate borrowedOn, int loanDays, LocalDate returnedOn) {
     

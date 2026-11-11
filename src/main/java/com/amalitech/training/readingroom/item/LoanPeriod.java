@@ -1,7 +1,7 @@
-package readingroom.item;
+package com.amalitech.training.readingroom.item;
 import java.util.Objects;
 
-import readingroom.member.MemberType;
+import com.amalitech.training.readingroom.member.MemberType;
 
 public record LoanPeriod (int standardDays, int studentDays) {
 

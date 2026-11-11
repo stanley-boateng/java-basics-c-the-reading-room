@@ -1,16 +1,16 @@
-package readingroom;
+package com.amalitech.training.readingroom;
 // The Reading Room - community library lending tracker
 // Original program, built by a volunteer. New volunteers are told not to touch it.
 // Run it first to see the sort of thing they are worried about, and look closely
 // at the items and active loans in the end-of-day report.
 
 
-import readingroom.member.Member;
-import readingroom.member.MemberType;
-import readingroom.item.Book;
-import readingroom.library.Library;
-import readingroom.desk.LendingDesk;
-import readingroom.item.AudioKit;
+import com.amalitech.training.readingroom.member.Member;
+import com.amalitech.training.readingroom.member.MemberType;
+import com.amalitech.training.readingroom.item.Book;
+import com.amalitech.training.readingroom.library.Library;
+import com.amalitech.training.readingroom.desk.LendingDesk;
+import com.amalitech.training.readingroom.item.AudioKit;
 
 
 

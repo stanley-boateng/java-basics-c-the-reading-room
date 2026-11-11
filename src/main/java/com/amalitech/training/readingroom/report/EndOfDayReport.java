@@ -1,8 +1,8 @@
-package readingroom.report;
+package com.amalitech.training.readingroom.report;
 
-import readingroom.library.Library;
-import readingroom.item.LendingItem;
-import readingroom.library.Loan;
+import com.amalitech.training.readingroom.library.Library;
+import com.amalitech.training.readingroom.item.LendingItem;
+import com.amalitech.training.readingroom.library.Loan;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public final class EndOfDayReport {
 
     // Return a list of strings representing the lines of an end-of-day report for the given library, as of the given date.    
     public static List<String> lines(Library library){
-        Objects.requireNonNull("library cannot be empty");
+        Objects.requireNonNull(library, "library cannot be empty");
         return lines(library, library.today());
     }
 

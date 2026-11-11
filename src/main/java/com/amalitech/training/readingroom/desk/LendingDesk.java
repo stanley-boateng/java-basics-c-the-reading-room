@@ -1,14 +1,14 @@
-package readingroom.desk;
+package com.amalitech.training.readingroom.desk;
 
 import java.io.PrintStream;
 import java.util.Objects;
 
-import readingroom.library.Library;
-import readingroom.library.Loan;
-import readingroom.library.ItemAlreadyOnLoanException;
-import readingroom.item.LendingItem;
-import readingroom.member.Member;
-import readingroom.report.EndOfDayReport;
+import com.amalitech.training.readingroom.library.Library;
+import com.amalitech.training.readingroom.library.Loan;
+import com.amalitech.training.readingroom.library.ItemAlreadyOnLoanException;
+import com.amalitech.training.readingroom.item.LendingItem;
+import com.amalitech.training.readingroom.member.Member;
+import com.amalitech.training.readingroom.report.EndOfDayReport;
 
 
 public final class LendingDesk {

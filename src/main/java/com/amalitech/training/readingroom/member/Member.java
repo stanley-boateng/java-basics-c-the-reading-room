@@ -1,4 +1,4 @@
-package readingroom.member;
+package com.amalitech.training.readingroom.member;
 import java.util.Objects;
 
 public final class Member {
