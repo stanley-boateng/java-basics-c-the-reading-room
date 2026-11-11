@@ -11,5 +11,24 @@
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <build><finalName>the-reading-room</finalName></build>
+    <dependencies>
+        <!-- Test-only: used by the JUnit tests in src/test/java, not shipped with the program. -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>the-reading-room</finalName>
+        <plugins>
+            <!-- Surefire runs the tests during `mvn test`; 3.x is needed for JUnit 5. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>
