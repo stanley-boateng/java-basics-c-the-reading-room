@@ -1,21 +1,18 @@
 package com.amalitech.training.readingroom;
+
+import com.amalitech.training.readingroom.desk.LendingDesk;
+import com.amalitech.training.readingroom.item.AudioKit;
+import com.amalitech.training.readingroom.item.Book;
+import com.amalitech.training.readingroom.library.Library;
+import com.amalitech.training.readingroom.member.Member;
+import com.amalitech.training.readingroom.member.MemberType;
+
 /**
  * The Reading Room - community library lending tracker.
  *
  * Replays the same afternoon as the original program. The output is identical,
  * except that lending an item that is already on loan is now refused.
  */
-
-
-import com.amalitech.training.readingroom.member.Member;
-import com.amalitech.training.readingroom.member.MemberType;
-import com.amalitech.training.readingroom.item.Book;
-import com.amalitech.training.readingroom.library.Library;
-import com.amalitech.training.readingroom.desk.LendingDesk;
-import com.amalitech.training.readingroom.item.AudioKit;
-
-
-
 public final class LendingTracker {
 
     private LendingTracker() {
@@ -25,7 +22,11 @@ public final class LendingTracker {
     public static void main(String[] args) {
         var library = new Library("The Reading Room");
         var desk = new LendingDesk(library, System.out);
+        replayOriginalAfternoon(library, desk);
+    }
 
+    /** The same afternoon as the original program's main method. */
+    private static void replayOriginalAfternoon(Library library, LendingDesk desk) {
         var novel = new Book("Things Fall Apart");
         var audioCourse = new AudioKit("French Audio Course");
         library.addItem(novel);
@@ -43,9 +44,8 @@ public final class LendingTracker {
 
         // the case that used to corrupt the records: the novel is already out with Kofi,
         // so this loan is now refused
-        desk.borrow(ama, novel); // the novel is already out with Kofi, but nothing stops this
+        desk.borrow(ama, novel);
 
         desk.printEndOfDayReport();
     }
 }
-
