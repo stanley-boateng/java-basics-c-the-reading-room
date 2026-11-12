@@ -14,9 +14,12 @@ public record LoanPeriod(int standardDays, int studentDays) {
 
     public int daysFor(MemberType memberType) {
         Objects.requireNonNull(memberType, "memberType cannot be null");
-        if (memberType == MemberType.STUDENT) {
-            return studentDays;
-        }
-        return standardDays;
+        // No default branch on purpose: if a new MemberType is added, this stops compiling
+        // until someone decides that type's loan length, instead of it silently getting the
+        // standard length.
+        return switch (memberType) {
+            case STANDARD -> standardDays;
+            case STUDENT -> studentDays;
+        };
     }
 }
