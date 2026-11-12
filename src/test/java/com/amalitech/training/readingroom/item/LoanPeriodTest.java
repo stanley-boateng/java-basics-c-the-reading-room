@@ -20,7 +20,7 @@ class LoanPeriodTest {
         "AUDIO_KIT, STUDENT,  14"
     })
     void loanLengthDependsOnItemKindAndMemberType(String itemKind, MemberType memberType, int expectedDays) {
-        LendingItem item = itemKind.equals("BOOK") ? new Book("Any title") : new AudioKit("Any title");
+        LendingItem item = itemKind.equals("BOOK") ? new Book("B-0001", "Any title") : new AudioKit("A-0001", "Any title");
 
         assertEquals(itemKind, item.typeCode());
         assertEquals(expectedDays, item.loanPeriod().daysFor(memberType));
@@ -42,7 +42,7 @@ class LoanPeriodTest {
     @Test
     @DisplayName("Items need a title")
     void itemsNeedATitle() {
-        assertThrows(IllegalArgumentException.class, () -> new Book("  "));
-        assertThrows(IllegalArgumentException.class, () -> new AudioKit(null));
+        assertThrows(IllegalArgumentException.class, () -> new Book("B-0001", "  "));
+        assertThrows(IllegalArgumentException.class, () -> new AudioKit("A-0001", null));
     }
 }

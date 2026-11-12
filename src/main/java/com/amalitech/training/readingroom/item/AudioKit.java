@@ -3,8 +3,8 @@ package com.amalitech.training.readingroom.item;
 public final class AudioKit extends LendingItem {
     private static final LoanPeriod LOAN_PERIOD = new LoanPeriod(7, 14);
 
-    public AudioKit(String title) {
-        super(title);
+    public AudioKit(String copyId, String title) {
+        super(copyId, title);
     }
 
     @Override

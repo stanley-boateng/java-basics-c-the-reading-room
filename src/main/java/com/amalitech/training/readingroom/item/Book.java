@@ -4,8 +4,8 @@ public final class Book extends LendingItem {
 
     private static final LoanPeriod LOAN_PERIOD = new LoanPeriod(14, 28);
 
-    public Book(String title) {
-        super(title);
+    public Book(String copyId, String title) {
+        super(copyId, title);
     }
 
     @Override

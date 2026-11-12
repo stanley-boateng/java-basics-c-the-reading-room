@@ -22,10 +22,10 @@ public final class LendingDesk {
     public boolean borrow(Member member, LendingItem item) {
         try {
             Loan loan = library.borrow(member, item);
-            out.println("Lent \"" + item.title() + "\" to " + member.name() + " for " + loan.loanDays() + " days");
+            out.println("Lent " + label(item) + " to " + member.name() + " for " + loan.loanDays() + " days");
             return true;
         } catch (ItemAlreadyOnLoanException e) {
-            out.println("Cannot lend \"" + item.title() + "\" to " + member.name()
+            out.println("Cannot lend " + label(item) + " to " + member.name()
                     + ": it is already on loan to " + e.borrowerName());
             return false;
         }
@@ -38,10 +38,20 @@ public final class LendingDesk {
      */
     public void returnItem(LendingItem item) {
         library.returnItem(item);
-        out.println("Returned \"" + item.title() + "\"");
+        out.println("Returned " + label(item));
     }
 
     public void printEndOfDayReport() {
         EndOfDayReport.printTo(library, out);
+    }
+
+    /**
+     * An item as the volunteer sees it: its title in quotes, as the original program printed it.
+     * Items and members carry IDs (copy ID and member ID), and those IDs decide which copy and
+     * which person a loan belongs to, but they are deliberately not printed, so the console
+     * output stays the same as the original program's.
+     */
+    private static String label(LendingItem item) {
+        return "\"" + item.title() + "\"";
     }
 }

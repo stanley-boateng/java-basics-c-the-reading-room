@@ -58,7 +58,7 @@ Adding e-loans is **one new class**, and nothing else changes:
 ```java
 public final class EBook extends LendingItem {
     private static final LoanPeriod LOAN_PERIOD = new LoanPeriod(21, 21);
-    public EBook(String title) { super(title); }
+    public EBook(String copyId, String title) { super(copyId, title); }
     @Override public String typeCode() { return "E_LOAN"; }
     @Override public LoanPeriod loanPeriod() { return LOAN_PERIOD; }
 }
@@ -130,5 +130,11 @@ Active loans:
 ```
 
 Every line matches the original program except the "Cannot lend…" line: the original lent
-the novel a second time and its report then showed two active loans for one book. When a
-loan is past its due date, the report also ends with an **Overdue loans** section.
+the novel a second time and its report then showed two active loans for one book.
+
+Every item has a copy ID (its barcode, such as `B-0001`) and every member has a member ID
+(their card number, such as `M-0001`). The IDs decide which copy and which person a loan
+belongs to, so two copies of a title or two members with the same name are never confused.
+They are not printed, so the output stays the same as the original program's.
+
+When a loan is past its due date, the report also ends with an **Overdue loans** section.

@@ -42,10 +42,10 @@ class LendingDeskTest {
     @Test
     @DisplayName("The original afternoon prints the original output, except the double loan is refused")
     void originalAfternoon() {
-        Book novel = new Book("Things Fall Apart");
-        AudioKit audioCourse = new AudioKit("French Audio Course");
-        Member kofi = new Member("Kofi Mensah", MemberType.STANDARD);
-        Member ama = new Member("Ama Owusu", MemberType.STUDENT);
+        Book novel = new Book("B-0001", "Things Fall Apart");
+        AudioKit audioCourse = new AudioKit("A-0001", "French Audio Course");
+        Member kofi = new Member("M-0001", "Kofi Mensah", MemberType.STANDARD);
+        Member ama = new Member("M-0002", "Ama Owusu", MemberType.STUDENT);
         library.addItem(novel);
         library.addItem(audioCourse);
         library.addMember(kofi);
@@ -78,7 +78,7 @@ class LendingDeskTest {
     @Test
     @DisplayName("Returning an item that is not on loan prints Returned, exactly as the original did")
     void returnOfItemNotOnLoanMatchesOriginal() {
-        Book novel = new Book("Things Fall Apart");
+        Book novel = new Book("B-0001", "Things Fall Apart");
         library.addItem(novel);
 
         desk.returnItem(novel);

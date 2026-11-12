@@ -11,12 +11,12 @@ alternatives, and how the structure makes the change the library says is coming
 com.amalitech.training.readingroom
 ├── LendingTracker        entry point: wires the library and desk together, then replays the afternoon
 ├── item/                 WHAT can be lent
-│   ├── LendingItem       abstract: every item has a title and a loan rule
+│   ├── LendingItem       abstract: every item has a copy ID, a title and a loan rule
 │   ├── Book              14 days standard / 28 student
 │   ├── AudioKit          7 days standard / 14 student
 │   └── LoanPeriod        record: the two loan lengths for one kind of item
 ├── member/               WHO borrows
-│   ├── Member            name + membership type
+│   ├── Member            member ID + name + membership type
 │   └── MemberType        enum: STANDARD, STUDENT
 ├── library/              THE RULES
 │   ├── Library           the only place loans are opened and closed
@@ -78,7 +78,7 @@ item kinds are classes the compiler checks.
 | Alternative | Why I didn't choose it |
 |---|---|
 | An `ItemType` enum (`BOOK(14, 28)`, `AUDIO_KIT(7, 14)`) stored on a single item class | Simpler, with every loan rule in one file. But every new kind means editing that shared file, and if e-loans have their own *behaviour* (not just different numbers), it turns into `if (type == …)` checks spread around the code. That's how the original became fragile. |
-| Records for `Book` and `AudioKit` | Records compare by value, so two copies of *Things Fall Apart* would count as the same item. Returning one would affect the other, which is the original's return bug again. Items need to be separate objects. |
+| Records for `Book` and `AudioKit` | A record can't extend a class, so each kind would repeat the copy ID, the title and their validation. Records also compare every field, while two items are the same copy only when their copy IDs match. |
 | Keep the original single class and just add checks | Fixes today's bug, but leaves the shared `if`/`else` method that made changes risky. |
 
 **Composition as well as inheritance.** Items *inherit* their title and its
@@ -105,9 +105,15 @@ value that's easy to read and test on its own.
 
 - `Loan` and `LoanPeriod` are **records**: plain, unchangeable data. Returning an item
   doesn't edit the loan; it creates a new `Loan` with the return date filled in.
-- `LendingItem` and `Member` are **classes** on purpose. Two members called Kofi
-  Mensah are two people, and two copies of a book are two items. Classes keep Java's
-  default "same object" equality, so the library never confuses them.
+- `LendingItem` and `Member` are **classes** on purpose: they are things with an identity,
+  not plain values. Each carries a stable ID that would survive a restart: a copy ID (the
+  barcode, such as `B-0001`) on every item and a member ID (the card number, such as
+  `M-0001`) on every member. `equals` and `hashCode` compare **only that ID**. The IDs are
+  used inside the program only and are not printed, so the console output stays the same as
+  the original's. Two
+  members called Kofi Mensah are two people because their IDs differ, and two copies of
+  *Things Fall Apart* are two items. Item equality is `final` in `LendingItem`, so no kind
+  of item can go back to matching by title, which was the original's return bug.
 
 ## Decision 5: a refused loan is a checked exception
 
@@ -158,8 +164,8 @@ public final class EBook extends LendingItem {
 
     private static final LoanPeriod LOAN_PERIOD = new LoanPeriod(21, 21);
 
-    public EBook(String title) {
-        super(title);
+    public EBook(String copyId, String title) {
+        super(copyId, title);
     }
 
     @Override
@@ -174,7 +180,7 @@ public final class EBook extends LendingItem {
 }
 ```
 
-Use it like any other item: `library.addItem(new EBook("Purple Hibiscus"));`
+Use it like any other item: `library.addItem(new EBook("E-0001", "Purple Hibiscus"));`
 
 **What changes:** one new file. **What doesn't change:** `Library`, `Loan`,
 `LendingDesk`, `EndOfDayReport`, `Book`, `AudioKit`, `Member`.
@@ -248,13 +254,15 @@ Active loans:
 
 **What's different, on purpose:** the second loan of the novel is refused. Because
 of that, the report correctly shows the novel with Kofi, and only one active loan.
+Items and members now carry IDs (copy ID and member ID) that decide identity inside the
+program. They are deliberately not printed, so none of the output above changes because of them.
 
 **Automated evidence.** `mvn test` runs JUnit tests that pin this behaviour down:
 
 | Test class | What it proves |
 |---|---|
 | `LendingDeskTest` | the console output of the original afternoon, line for line, with only the refused loan different; returning an item that isn't on loan prints exactly what the original printed |
-| `LibraryTest` | an item can't be on two loans (exception type, blocking loan number, first loan untouched); returns close only that copy's loan; read-only lists; registration and input checks |
+| `LibraryTest` | an item can't be on two loans (exception type, blocking loan number, first loan untouched); returns close only that copy's loan; read-only lists; registration and input checks; copy IDs and member IDs decide identity |
 | `LoanPeriodTest` | the loan-period table (book 14/28, audio kit 7/14) as parameterized cases |
 | `EndOfDayReportTest` | the report format, and the overdue section added beyond the brief |
 
@@ -275,6 +283,8 @@ own records or accepted a mistake:
 | Misspelt item type (`"book"`) | silent 0-day loan | can't happen: item kinds are classes |
 | Item or member never added to the library | accepted | rejected with an error |
 | The same item added twice | listed twice in the report | rejected with an error |
+| Two copies of the same title | indistinguishable: matched by title | each copy has its own copy ID, used to track it (not printed, to keep the original output) |
+| Two members with the same name | no way to tell them apart | each member has a member ID; the library tracks them separately (not printed) |
 
 ---
 

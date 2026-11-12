@@ -27,13 +27,13 @@ public final class LendingTracker {
 
     /** The same afternoon as the original program's main method. */
     private static void replayOriginalAfternoon(Library library, LendingDesk desk) {
-        var novel = new Book("Things Fall Apart");
-        var audioCourse = new AudioKit("French Audio Course");
+        var novel = new Book("B-0001", "Things Fall Apart");
+        var audioCourse = new AudioKit("A-0001", "French Audio Course");
         library.addItem(novel);
         library.addItem(audioCourse);
 
-        var kofi = new Member("Kofi Mensah", MemberType.STANDARD);
-        var ama = new Member("Ama Owusu", MemberType.STUDENT);
+        var kofi = new Member("M-0001", "Kofi Mensah", MemberType.STANDARD);
+        var ama = new Member("M-0002", "Ama Owusu", MemberType.STUDENT);
         library.addMember(kofi);
         library.addMember(ama);
 
