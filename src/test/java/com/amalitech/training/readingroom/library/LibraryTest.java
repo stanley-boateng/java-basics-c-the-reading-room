@@ -34,9 +34,9 @@ class LibraryTest {
     @BeforeEach
     void setUp() {
         library = new Library("Test Library", FIXED_CLOCK);
-        novel = new Book("Things Fall Apart");
-        kofi = new Member("Kofi Mensah", MemberType.STANDARD);
-        ama = new Member("Ama Owusu", MemberType.STUDENT);
+        novel = new Book("B-0001", "Things Fall Apart");
+        kofi = new Member("M-0001", "Kofi Mensah", MemberType.STANDARD);
+        ama = new Member("M-0002", "Ama Owusu", MemberType.STUDENT);
         library.addItem(novel);
         library.addMember(kofi);
         library.addMember(ama);
@@ -72,6 +72,13 @@ class LibraryTest {
     }
 
     @Test
+    @DisplayName("A member's toString shows the member ID but not the name, so it is safe to log")
+    void memberToStringDoesNotContainName() {
+        assertTrue(kofi.toString().contains("M-0001"));
+        assertFalse(kofi.toString().contains("Kofi"));
+    }
+
+    @Test
     @DisplayName("The same member borrowing the same item twice is also refused")
     void sameMemberCannotBorrowTwice() throws ItemAlreadyOnLoanException {
         library.borrow(kofi, novel);
@@ -83,7 +90,7 @@ class LibraryTest {
     @Test
     @DisplayName("A refused borrow does not use up a loan number")
     void refusedBorrowDoesNotUseALoanNumber() throws ItemAlreadyOnLoanException {
-        AudioKit kit = new AudioKit("French Audio Course");
+        AudioKit kit = new AudioKit("A-0001", "French Audio Course");
         library.addItem(kit);
         library.borrow(kofi, novel);
         assertThrows(ItemAlreadyOnLoanException.class, () -> library.borrow(ama, novel));
@@ -109,7 +116,7 @@ class LibraryTest {
     @Test
     @DisplayName("Returning one copy does not close the loan on another copy with the same title")
     void returnClosesOnlyThatCopysLoan() throws ItemAlreadyOnLoanException {
-        Book secondCopy = new Book("Things Fall Apart");
+        Book secondCopy = new Book("B-0002", "Things Fall Apart");
         library.addItem(secondCopy);
         library.borrow(kofi, novel);
         Loan amasLoan = library.borrow(ama, secondCopy);
@@ -166,9 +173,9 @@ class LibraryTest {
     @Test
     @DisplayName("Items and members must be registered with this library")
     void unregisteredItemsAndMembersAreRejected() {
-        Book unregistered = new Book("Not in the catalogue");
-        // Same name and type as Kofi, but a different person who never registered.
-        Member lookalike = new Member("Kofi Mensah", MemberType.STANDARD);
+        Book unregistered = new Book("B-0099", "Not in the catalogue");
+        // Same name and type as Kofi, but a different member ID: a different person who never registered.
+        Member lookalike = new Member("M-0099", "Kofi Mensah", MemberType.STANDARD);
 
         assertThrows(IllegalArgumentException.class, () -> library.borrow(kofi, unregistered));
         assertThrows(IllegalArgumentException.class, () -> library.borrow(lookalike, novel));
@@ -188,14 +195,49 @@ class LibraryTest {
         assertThrows(NullPointerException.class, () -> library.borrow(null, novel));
         assertThrows(NullPointerException.class, () -> library.borrow(kofi, null));
         assertThrows(NullPointerException.class, () -> library.addItem(null));
-        assertThrows(IllegalArgumentException.class, () -> new Member("", MemberType.STUDENT));
-        assertThrows(NullPointerException.class, () -> new Member("Ama Owusu", null));
+        assertThrows(IllegalArgumentException.class, () -> new Member("M-0003", "", MemberType.STUDENT));
+        assertThrows(NullPointerException.class, () -> new Member("M-0002", "Ama Owusu", null));
         assertThrows(IllegalArgumentException.class, () -> new Library(" ", FIXED_CLOCK));
+        assertThrows(IllegalArgumentException.class, () -> new Book(" ", "Things Fall Apart"));
+        assertThrows(IllegalArgumentException.class, () -> new Member(null, "Kofi Mensah", MemberType.STANDARD));
     }
+
+    // ---- identity: copy IDs and member IDs ---------------------------------------------
 
     @Test
     @DisplayName("Two copies with the same title are different items")
     void copiesAreDistinct() {
-        assertNotEquals(new Book("Things Fall Apart"), novel);
+        assertNotEquals(new Book("B-0002", "Things Fall Apart"), novel);
+    }
+
+    @Test
+    @DisplayName("Two objects with the same copy ID are the same copy, whatever their title")
+    void sameCopyIdIsSameCopy() {
+        Book sameBarcode = new Book("B-0001", "A Different Title");
+
+        assertEquals(novel, sameBarcode);
+        assertEquals(novel.hashCode(), sameBarcode.hashCode());
+        assertThrows(IllegalArgumentException.class, () -> library.addItem(sameBarcode));
+    }
+
+    @Test
+    @DisplayName("Two members with the same name but different IDs are two people")
+    void sameNameDifferentIdIsADifferentMember() throws ItemAlreadyOnLoanException {
+        Member otherKofi = new Member("M-0003", "Kofi Mensah", MemberType.STANDARD);
+        library.addMember(otherKofi);
+
+        library.borrow(kofi, novel);
+
+        assertNotEquals(kofi, otherKofi);
+        assertEquals(1, library.loansFor(kofi).size());
+        assertTrue(library.loansFor(otherKofi).isEmpty());
+    }
+
+    @Test
+    @DisplayName("A member ID can only be registered once")
+    void duplicateMemberIdIsRejected() {
+        Member sameCard = new Member("M-0001", "Someone Else", MemberType.STUDENT);
+
+        assertThrows(IllegalArgumentException.class, () -> library.addMember(sameCard));
     }
 }

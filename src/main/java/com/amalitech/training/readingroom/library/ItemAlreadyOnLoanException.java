@@ -13,7 +13,7 @@ public final class ItemAlreadyOnLoanException extends Exception {
     // so only code in this package can create this exception. Other packages catch it.
     ItemAlreadyOnLoanException(Loan blockingLoan) {
         // Keep the member's name out of the message so the message is safe to log.
-        super("\"" + blockingLoan.item().title() + "\" is already on loan (loan #" + blockingLoan.number() + ")");
+        super("\"" + blockingLoan.item().title() + "\" [" + blockingLoan.item().copyId() + "] is already on loan (loan #" + blockingLoan.number() + ")");
         this.blockingLoanNumber = blockingLoan.number();
         this.borrowerName = blockingLoan.member().name();
     }

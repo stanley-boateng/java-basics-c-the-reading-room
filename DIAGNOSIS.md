@@ -37,12 +37,12 @@ _Added after the first code change; the structure below is what was built._
 com.amalitech.training.readingroom
 ├── LendingTracker        entry point: sets up the library and replays the afternoon
 ├── item/                 WHAT can be lent
-│   ├── LendingItem       abstract: every item has a title and a loan rule
+│   ├── LendingItem       abstract: every item has a copy ID, a title and a loan rule
 │   ├── Book              14 days standard / 28 student
 │   ├── AudioKit          7 days standard / 14 student
 │   └── LoanPeriod        record: the two loan lengths for one kind of item
 ├── member/               WHO borrows
-│   ├── Member            name + membership type
+│   ├── Member            member ID + name + membership type
 │   └── MemberType        enum: STANDARD, STUDENT
 ├── library/              THE RULES
 │   ├── Library           the only place loans are opened and closed
@@ -62,8 +62,12 @@ classDiagram
 
     class LendingItem {
         <<abstract>>
+        -String copyId
         -String title
+        +copyId() String
         +title() String
+        +equals(Object) boolean
+        +hashCode() int
         +typeCode()* String
         +loanPeriod()* LoanPeriod
     }
@@ -85,10 +89,14 @@ classDiagram
     }
 
     class Member {
+        -String memberId
         -String name
         -MemberType type
+        +memberId() String
         +name() String
         +type() MemberType
+        +equals(Object) boolean
+        +hashCode() int
     }
     class MemberType {
         <<enumeration>>

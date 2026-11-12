@@ -31,9 +31,19 @@ public final class EndOfDayReport {
         return lines(library, library.today());
     }
 
+    /**
+     * An item as the volunteer sees it: its title in quotes, as the original program printed it.
+     * Items and members carry IDs (copy ID and member ID), and those IDs decide which copy and
+     * which person a loan belongs to, but they are deliberately not printed, so the console
+     * output stays the same as the original program's.
+     */
+    private static String label(LendingItem item) {
+        return "\"" + item.title() + "\"";
+    }
+
     /** One loan, formatted as in the original report: Loan #1: "Title" -> Member. */
     private static String describe(Loan loan) {
-        return "  Loan #" + loan.number() + ": \"" + loan.item().title() + "\" -> " + loan.member().name();
+        return "  Loan #" + loan.number() + ": " + label(loan.item()) + " -> " + loan.member().name();
     }
 
     /** The report's lines as of a given date, for example to see what will be overdue next week. */
@@ -49,7 +59,7 @@ public final class EndOfDayReport {
             if (library.isOnLoan(item)) {
                 status = "ON_LOAN - with " + library.activeLoanFor(item).member().name();
             }
-            reportLines.add("  \"" + item.title() + "\" (" + item.typeCode() + "): " + status);
+            reportLines.add("  " + label(item) + " (" + item.typeCode() + "): " + status);
         }
         reportLines.add("Active loans:");
         for (Loan loan : library.activeLoans()) {

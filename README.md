@@ -58,7 +58,7 @@ Adding e-loans is **one new class**, and nothing else changes:
 ```java
 public final class EBook extends LendingItem {
     private static final LoanPeriod LOAN_PERIOD = new LoanPeriod(21, 21);
-    public EBook(String title) { super(title); }
+    public EBook(String copyId, String title) { super(copyId, title); }
     @Override public String typeCode() { return "E_LOAN"; }
     @Override public LoanPeriod loanPeriod() { return LOAN_PERIOD; }
 }
@@ -87,7 +87,8 @@ report is unchanged from the original's.
 ## Running it
 
 You need JDK 21 and Maven. The program itself has no external dependencies; JUnit is
-used only by the tests.
+used only by the tests. The Maven build compiles main and test code with
+`-Xlint:all -Werror`, so any compiler warning fails the build.
 
 **With Maven:**
 
@@ -99,7 +100,7 @@ mvn exec:java -Dexec.mainClass=com.amalitech.training.readingroom.LendingTracker
 **Or directly with the JDK** (macOS/Linux/Git Bash):
 
 ```bash
-javac -d target/classes $(find src/main/java -name "*.java")
+javac -Xlint:all -Werror --release 21 -d target/classes $(find src/main/java -name "*.java")
 java -cp target/classes com.amalitech.training.readingroom.LendingTracker
 ```
 
@@ -110,8 +111,9 @@ mvn test
 ```
 
 The tests (in `src/test/java`) cover the one-loan-per-item rule, returns, the loan-period
-table, the end-of-day report and overdue section, and the exact console output the
-volunteer sees. See [`DESIGN.md`](DESIGN.md) for how they show behaviour is preserved.
+table, copy IDs and member IDs, the end-of-day report and overdue section, and the exact
+console output the volunteer sees. See [`DESIGN.md`](DESIGN.md) for how they show
+behaviour is preserved.
 
 ## Expected output
 
@@ -130,5 +132,11 @@ Active loans:
 ```
 
 Every line matches the original program except the "Cannot lend…" line: the original lent
-the novel a second time and its report then showed two active loans for one book. When a
-loan is past its due date, the report also ends with an **Overdue loans** section.
+the novel a second time and its report then showed two active loans for one book.
+
+Every item has a copy ID (its barcode, such as `B-0001`) and every member has a member ID
+(their card number, such as `M-0001`). The IDs decide which copy and which person a loan
+belongs to, so two copies of a title or two members with the same name are never confused.
+They are not printed, so the output stays the same as the original program's.
+
+When a loan is past its due date, the report also ends with an **Overdue loans** section.

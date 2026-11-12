@@ -30,10 +30,10 @@ class EndOfDayReportTest {
     @BeforeEach
     void setUp() throws ItemAlreadyOnLoanException {
         library = new Library("The Reading Room", FIXED_CLOCK);
-        novel = new Book("Things Fall Apart");
-        AudioKit audioCourse = new AudioKit("French Audio Course");
-        Member kofi = new Member("Kofi Mensah", MemberType.STANDARD);
-        Member ama = new Member("Ama Owusu", MemberType.STUDENT);
+        novel = new Book("B-0001", "Things Fall Apart");
+        AudioKit audioCourse = new AudioKit("A-0001", "French Audio Course");
+        Member kofi = new Member("M-0001", "Kofi Mensah", MemberType.STANDARD);
+        Member ama = new Member("M-0002", "Ama Owusu", MemberType.STUDENT);
         library.addItem(novel);
         library.addItem(audioCourse);
         library.addMember(kofi);

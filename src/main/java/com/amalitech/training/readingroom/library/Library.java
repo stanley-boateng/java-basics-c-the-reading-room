@@ -44,7 +44,7 @@ public final class Library {
     public void addItem(LendingItem item) {
         Objects.requireNonNull(item, "item cannot be null");
         if (items.contains(item)) {
-            throw new IllegalArgumentException("\"" + item.title() + "\" is already registered");
+            throw new IllegalArgumentException("Copy " + item.copyId() + " is already registered");
         }
         items.add(item);
     }
@@ -52,7 +52,7 @@ public final class Library {
     public void addMember(Member member) {
         Objects.requireNonNull(member, "member cannot be null");
         if (members.contains(member)) {
-            throw new IllegalArgumentException("This member is already registered");
+            throw new IllegalArgumentException("Member " + member.memberId() + " is already registered");
         }
         members.add(member);
     }
@@ -60,14 +60,14 @@ public final class Library {
     private void requireRegisteredMember(Member member) {
         Objects.requireNonNull(member, "member cannot be null");
         if (!members.contains(member)) {
-            throw new IllegalArgumentException("This member is not registered with " + name);
+            throw new IllegalArgumentException("Member " + member.memberId() + " is not registered with " + name);
         }
     }
 
     private void requireRegisteredItem(LendingItem item) {
         Objects.requireNonNull(item, "item cannot be null");
         if (!items.contains(item)) {
-            throw new IllegalArgumentException("\"" + item.title() + "\" is not registered with " + name);
+            throw new IllegalArgumentException("Copy " + item.copyId() + " is not registered with " + name);
         }
     }
 
@@ -112,7 +112,7 @@ public final class Library {
         requireRegisteredItem(item);
         Integer index = activeLoanIndexByItem.get(item);
         if (index == null) {
-            throw new IllegalStateException("\"" + item.title() + "\" is not currently on loan");
+            throw new IllegalStateException("Copy " + item.copyId() + " is not currently on loan");
         }
         return loans.get(index);
     }
