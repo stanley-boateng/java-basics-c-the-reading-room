@@ -72,6 +72,13 @@ class LibraryTest {
     }
 
     @Test
+    @DisplayName("A member's toString shows the member ID but not the name, so it is safe to log")
+    void memberToStringDoesNotContainName() {
+        assertTrue(kofi.toString().contains("M-0001"));
+        assertFalse(kofi.toString().contains("Kofi"));
+    }
+
+    @Test
     @DisplayName("The same member borrowing the same item twice is also refused")
     void sameMemberCannotBorrowTwice() throws ItemAlreadyOnLoanException {
         library.borrow(kofi, novel);

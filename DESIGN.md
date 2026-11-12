@@ -89,9 +89,9 @@ value that's easy to read and test on its own.
 
 - **Private, final fields and no setters** in every class. Once created, an item,
   member or loan can't be changed from outside.
-- **Constructors validate input.** A blank title or name, a missing type, a zero-day
-  loan period or a return date before the borrow date is rejected immediately, so an
-  invalid object can never exist.
+- **Constructors validate input.** A blank copy ID, member ID, title or name, a missing
+  type, a zero-day loan period or a return date before the borrow date is rejected
+  immediately, so an invalid object can never exist.
 - **Only `Library` opens and closes loans.** `Loan.open` and `Loan.close` are
   package-private, so only code in the `library` package can call them.
 - **Read-only lists.** `items()`, `members()`, `activeLoans()`, `overdueLoans()` and
@@ -99,7 +99,8 @@ value that's easy to read and test on its own.
   `.clear()` or `.add()` throws an exception instead of changing the library's
   records.
 - **Registration is checked.** Lending an item or member that was never added to the
-  library is rejected.
+  library is rejected. Registering a copy ID or member ID that is already in use is
+  rejected too.
 
 ## Decision 4: values are records, things with an identity are classes
 
