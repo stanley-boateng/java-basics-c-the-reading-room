@@ -87,7 +87,8 @@ report is unchanged from the original's.
 ## Running it
 
 You need JDK 21 and Maven. The program itself has no external dependencies; JUnit is
-used only by the tests.
+used only by the tests. The Maven build compiles main and test code with
+`-Xlint:all -Werror`, so any compiler warning fails the build.
 
 **With Maven:**
 
@@ -99,7 +100,7 @@ mvn exec:java -Dexec.mainClass=com.amalitech.training.readingroom.LendingTracker
 **Or directly with the JDK** (macOS/Linux/Git Bash):
 
 ```bash
-javac -d target/classes $(find src/main/java -name "*.java")
+javac -Xlint:all -Werror --release 21 -d target/classes $(find src/main/java -name "*.java")
 java -cp target/classes com.amalitech.training.readingroom.LendingTracker
 ```
 
@@ -110,8 +111,9 @@ mvn test
 ```
 
 The tests (in `src/test/java`) cover the one-loan-per-item rule, returns, the loan-period
-table, the end-of-day report and overdue section, and the exact console output the
-volunteer sees. See [`DESIGN.md`](DESIGN.md) for how they show behaviour is preserved.
+table, copy IDs and member IDs, the end-of-day report and overdue section, and the exact
+console output the volunteer sees. See [`DESIGN.md`](DESIGN.md) for how they show
+behaviour is preserved.
 
 ## Expected output
 

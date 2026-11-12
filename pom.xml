@@ -23,6 +23,20 @@
     <build>
         <finalName>the-reading-room</finalName>
         <plugins>
+            <!-- Strict compile for main and test code: every javac warning is reported and fails
+                 the build, so warnings can't pile up unnoticed. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                        <arg>-Werror</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
             <!-- Surefire runs the tests during `mvn test`; 3.x is needed for JUnit 5. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
